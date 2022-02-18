@@ -350,17 +350,16 @@ class data_src():
             # normalise using the predicted max CN0 at the given elevation
             temp = temp**2 / self.__clear_sky_max(elevation_angle)
 
-        # now serialise the file data into groups of s_num and then make a
-        # prediction
+        # now serialise the file data into groups of s_num
         max_row = self.__findLargestMultiple(temp.shape[0], s_num)
         # if there are two few rows in the file, then don't load the file's data
         # (may or may not be dubious, easier to ignore considering the quantity of data we're dealing with)
         if (max_row < s_num):
             return
         serialised_data = temp.iloc[0:max_row].to_numpy().reshape(
-            max_row // s_num, s_num * temp.shape[1])
-        serialised_data = TimeSeriesScalerMeanVariance(
-            mu=0.0, std=1.0).fit_transform(serialised_data)
+            max_row // s_num, s_num * temp.shape[1], 1)
+#         serialised_data = TimeSeriesScalerMeanVariance(
+#             mu=0.0, std=1.0).fit_transform(serialised_data)
 
         return serialised_data
 
